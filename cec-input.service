@@ -1,0 +1,6 @@
+[Service]
+EnvironmentFile=/etc/systemd/system/%N.env
+# Does not work, why?
+#ExecStart=sh -c 'cec-client | grep -Poa "(?<=key pressed: )\S+")'
+ExecStart=bash -c 'cec-client | while read l; do k=$(grep -Poa "(?<=key pressed: )\S+" <<< "$$l") && declare -n c=$$k && logger -t %N "Pressed $$k$${c:+, running $$c}" && $$c; done'
+Restart=no
